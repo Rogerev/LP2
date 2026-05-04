@@ -1,0 +1,76 @@
+class HospitalExpertSystem:
+    def __init__(self):
+        # WORKING MEMORY: Stores results of previous inferences
+        self.records = []
+
+    def add_patient(self):
+        """KNOWLEDGE ACQUISITION: Gathers facts for the Inference Engine."""
+        print("\n" + "-"*30)
+        print("PATIENT TRIAGE INTAKE")
+        print("-"*30)
+        
+        name = input("Enter Patient Name: ").strip() or "Unknown"
+        try:
+            age = int(input("Enter Patient Age: "))
+        except ValueError:
+            age = 0
+        
+        # SYMPTOM DICTIONARY (Ruleset mapping)
+        questions = {
+            "critical": "Is there heavy bleeding or severe injury? (y/n): ",
+            "cardiac":  "Is there chest pain or shortness of breath? (y/n): ",
+            "gastric":  "Is there severe stomach pain? (y/n): ",
+            "fever":    "Is there a high fever? (y/n): "
+        }
+
+        facts = {}
+        for key, prompt in questions.items():
+            facts[key] = input(prompt).lower().strip() == 'y'
+
+        # INFERENCE ENGINE: Categorical Classification
+        # Priority is handled by the order of the if-elif chain (Triage Logic)
+        if facts['critical']:
+            res = ("CRITICAL", "Emergency (ER)", "Immediate trauma care required.")
+        elif facts['cardiac']:
+            res = ("URGENT", "Cardiology", "EKG and cardiac monitoring required.")
+        elif facts['fever']:
+            # Age-based sub-rule
+            dept = "Pediatrics" if age < 12 else "Internal Medicine"
+            res = ("STABLE", dept, "Fever management and fluids.")
+        elif facts['gastric']:
+            res = ("STABLE", "Gastroenterology", "Specialist GI consultation.")
+        else:
+            res = ("LOW", "Outpatient (OPD)", "General wellness checkup.")
+
+        # Storing derived knowledge back into Working Memory
+        self.records.append({
+            "name": name, "age": age, "priority": res[0], "dept": res[1], "advice": res[2]
+        })
+        print(f"\n[AI] Diagnosis complete for {name}.")
+
+    def view_records(self):
+        """Visualizing the Knowledge Base outcomes."""
+        if not self.records:
+            return print("\nNo records found. Please evaluate a patient first.")
+        
+        print("\n" + "="*85)
+        print(f"{'NAME':<15} | {'AGE':<5} | {'PRIORITY':<10} | {'DEPARTMENT':<20} | {'ADVICE'}")
+        print("-" * 85)
+        for r in self.records:
+            print(f"{r['name']:<15} | {r['age']:<5} | {r['priority']:<10} | {r['dept']:<20} | {r['advice']}")
+        print("="*85)
+
+    def menu(self):
+        """System Main Loop."""
+        while True:
+            print("\nAI CLINICAL EXPERT SYSTEM")
+            print("1. New Patient Evaluation\n2. View Triage Records\n3. Exit")
+            choice = input("Select Option: ").strip()
+            
+            if choice == '1': self.add_patient()
+            elif choice == '2': self.view_records()
+            elif choice == '3': break
+            else: print("Invalid Selection.")
+
+if __name__ == "__main__":
+    HospitalExpertSystem().menu()
