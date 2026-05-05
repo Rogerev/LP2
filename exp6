@@ -139,3 +139,118 @@ if __name__ == "__main__":
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. Class Structure (class HospitalExpertSystem)
+What it is: A blueprint for creating objects.
+
+Why it's used: It encapsulates the Inference Engine and the Working Memory into a single unit. In AI, this is known as an Agent. It keeps the data (patient records) and the logic (diagnosis rules) organized together.
+
+2. Lists (self.records = [])
+What it is: An ordered, mutable (changeable) collection of items.
+
+Why it's used: This acts as the Working Memory or Global Fact Base. Every time the AI finishes a diagnosis, the resulting record is "appended" to this list. It allows the system to store "state" over time.
+
+3. Dictionaries (questions = { ... } and facts = { ... })
+What it is: A collection of key-value pairs.
+
+Why it's used:
+
+The questions dictionary is your Knowledge Base representation. It maps a technical "key" (like critical) to a human-readable prompt.
+
+The facts dictionary is used for Feature Extraction. It stores the patient's state (e.g., {'fever': True}).
+
+Dictionaries are ideal for AI because they allow for O(1) lookup time, meaning the engine can find a specific fact instantly.
+
+4. Tuples (res = ("CRITICAL", "Emergency", "..."))
+What it is: An ordered, immutable (unchangeable) collection.
+
+Why it's used: In your code, res stores the final diagnosis. We use a tuple because a diagnosis, once reached by the inference engine for a specific set of facts, should not be changed. It is a "packaged" result that is easy to unpack later.
+
+5. Boolean Logic (input(...).lower() == 'y')
+What it is: A data type that can only be True or False.
+
+Why it's used: This is the foundation of Binary Features. In Symbolic AI, we simplify the world into "True" or "False" facts so that the logic gates (if/elif) can process them.
+
+6. The Inference Engine (if / elif / else)
+What it is: Conditional Control Flow.
+
+Why it's used: This is the "brain." It performs Pattern Matching.
+
+The engine looks at the facts (Working Memory) and tries to match them against the if conditions (Rules).
+
+The Order matters: This is a Priority-Based Rule System. We check for "Critical" first because in Triage, the most severe rule must "fire" before the less severe ones.
+
+7. Try-Except Block (try: age = int(...))
+What it is: Exception Handling.
+
+Why it's used: In AI, this is a form of Input Validation. If a user enters "twenty" instead of "20," the int() function would crash. The try-except ensures the "Expert System" is robust and doesn't fail due to "noisy" or "invalid" data.
+
+8. String Formatting (f"{r['name']:<15}")
+What it is: f-strings (formatted string literals).
+
+Why it's used: The symbols like :<15 tell Python to "Left-align the text within 15 spaces." This is used to create the Deduction Board (Table). It makes the AI's output "human-interpretable," which is a key requirement for any Expert System.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+🔁 3. Flow of Your Program (VERY IMPORTANT)
+
+Understand this clearly — this is your main explanation in viva.
+
+▶️ Step 1: Program Starts
+if __name__ == "__main__":
+    HospitalExpertSystem().menu()
+
+👉 Meaning:
+
+Create system
+Start menu
+▶️ Step 2: Menu Runs
+while True:
+
+👉 Infinite loop (keeps running until exit)
+
+Options:
+
+Add patient
+View records
+Exit
+▶️ Step 3: User selects option
+
+If user selects 1 → add_patient() runs
+
+▶️ Step 4: Input Collection (Knowledge Acquisition)
+name = input("Enter Patient Name")
+age = int(input("Enter Age"))
+
+👉 System collects facts
+
+▶️ Step 5: Symptoms Input
+facts[key] = input(prompt) == 'y'
+
+👉 Converts:
+
+"y" → True
+"n" → False
+▶️ Step 6: Inference Engine (MAIN LOGIC)
+if facts['critical']:
+
+👉 This is where AI happens
+
+System decides:
+
+Condition	Output
+Critical	Emergency
+Cardiac	Urgent
+Fever	Stable
+Gastric	Stable
+None	Low
+▶️ Step 7: Store Result
+self.records.append({...})
+
+👉 Save patient data
+
+▶️ Step 8: View Records
+for r in self.records:
+
+👉 Loop through stored data and print
